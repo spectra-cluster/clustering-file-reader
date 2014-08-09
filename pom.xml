@@ -32,9 +32,9 @@
     </organization>
 
     <scm>
-        <connection>scm:svn:https://spectra-cluster.googlecode.com/svn/clustering-file-reader/tags/clustering-file-reader-1.0</connection>
-        <developerConnection>scm:svn:https://spectra-cluster.googlecode.com/svn/clustering-file-reader/tags/clustering-file-reader-1.0</developerConnection>
-        <url>https://spectra-cluster.googlecode.com/svn/clustering-file-reader/tags/clustering-file-reader-1.0</url>
+        <connection>scm:svn:https://spectra-cluster.googlecode.com/svn/clustering-file-reader</connection>
+        <developerConnection>scm:svn:https://spectra-cluster.googlecode.com/svn/clustering-file-reader</developerConnection>
+        <url>https://spectra-cluster.googlecode.com/svn/clustering-file-reader</url>
     </scm>
 
     <dependencies>
