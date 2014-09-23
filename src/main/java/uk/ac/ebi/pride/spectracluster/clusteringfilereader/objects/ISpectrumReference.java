@@ -11,4 +11,10 @@ public interface ISpectrumReference {
     public float getPrecursorMz();
 
     public int getCharge();
+
+    public float getSimilarityScore();
+
+    public String getSpecies();
+
+    public String getModifications();
 }
