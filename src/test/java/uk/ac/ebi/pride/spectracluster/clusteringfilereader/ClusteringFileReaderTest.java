@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 
 /**
  * Created by jg on 01.08.14.
@@ -52,10 +54,15 @@ public class ClusteringFileReaderTest {
         assertEquals(305.0F, cluster.getAvPrecursorMz());
         assertEquals(2, cluster.getSpecCount());
 
-        assertEquals("KGSCR", cluster.getSpectrumReferences().get(0).getSequence());
         assertEquals("PXD000090;PRIDE_Exp_Complete_Ac_27993.xml;spectrum=2338", cluster.getSpectrumReferences().get(0).getSpectrumId());
         assertEquals(304.61032F, cluster.getSpectrumReferences().get(0).getPrecursorMz());
         assertEquals(0, cluster.getSpectrumReferences().get(0).getCharge());
+
+        ISpectrumReference ref = cluster.getSpectrumReferences().get(0);
+        assertEquals(1, ref.getPSMs().size());
+        assertFalse(ref.isIdentifiedAsMultiplePeptides());
+        assertEquals("KGSCR", ref.getMostCommonPSM().getSequence());
+        assertEquals(0, ref.getMostCommonPSM().getModifications().size());
     }
 
 
@@ -74,12 +81,16 @@ public class ClusteringFileReaderTest {
         ISpectrumReference spectrum = spectrumReferences.get(0);
         assertEquals("PRD000715;PRIDE_Exp_Complete_Ac_24805.xml;spectrum=11", spectrum.getSpectrumId());
 
-        assertEquals("TSLAGGGR", spectrum.getSequence());
         assertEquals(399.68015F, spectrum.getPrecursorMz());
         assertEquals(2, spectrum.getCharge());
         assertEquals("9606", spectrum.getSpecies());
-        assertEquals("1-MOD:01455", spectrum.getModifications());
         assertEquals(1.0f, spectrum.getSimilarityScore());
 
+        assertEquals(1, spectrum.getPSMs().size());
+        assertFalse(spectrum.isIdentifiedAsMultiplePeptides());
+        assertEquals("TSLAGGGR", spectrum.getMostCommonPSM().getSequence());
+        assertEquals(1, spectrum.getMostCommonPSM().getModifications().size());
+        assertEquals(1, spectrum.getMostCommonPSM().getModifications().get(0).getPosition());
+        assertEquals("MOD:01455", spectrum.getMostCommonPSM().getModifications().get(0).getAccession());
     }
 }
