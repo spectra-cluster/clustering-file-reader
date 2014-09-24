@@ -1,9 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by jg on 10.07.14.
@@ -14,15 +11,17 @@ public class ClusteringFileCluster implements ICluster {
 
     private final List<SequenceCount> sequenceCounts;
     private final List<ISpectrumReference> spectrumRefs;
-    private final Set<String> sequences;
     private final String maxSequence;
     private Float minSpecPrecursorMz = Float.MAX_VALUE;
     private Float maxSpecPrecursorMz = 0F;
 
     private final float maxRatio;
+    private final int totalPsms;
 
     private final List<Float> consensusMzValues;
     private final List<Float> consensusIntensValues;
+
+    private Map<String, Integer> countPerPsmSequence;
 
     @Override
     public String getMaxSequence() {
@@ -37,17 +36,31 @@ public class ClusteringFileCluster implements ICluster {
         this.consensusMzValues = consensusMzValues;
         this.consensusIntensValues = consensusIntensValues;
 
-        // calculate the maximum ratio
-        sequences = new HashSet<String>();
+        // calculate the ratio for each sequence
+        int nTotalPSMs = 0;
+        countPerPsmSequence = new HashMap<String, Integer>();
+
+        for (ISpectrumReference specRef : spectrumRefs) {
+            for (IPeptideSpectrumMatch psm : specRef.getPSMs()) {
+                if (!countPerPsmSequence.containsKey(psm.getSequence()))
+                    countPerPsmSequence.put(psm.getSequence(), 0);
+
+                countPerPsmSequence.put(psm.getSequence(), countPerPsmSequence.get(psm.getSequence()) + 1);
+
+                nTotalPSMs++;
+            }
+        }
+
+        totalPsms = nTotalPSMs;
+
+        // get the maximum sequence
+        String tmpMaxSequence = null;
         int maxSequenceCount = 0;
-        String tmpMaxSequence = "";
 
-        for (SequenceCount c : sequenceCounts) {
-            sequences.add(c.getSequence());
-
-            if (maxSequenceCount < c.getCount()) {
-                maxSequenceCount = c.getCount();
-                tmpMaxSequence = c.getSequence();
+        for (String s : countPerPsmSequence.keySet()) {
+            if (countPerPsmSequence.get(s) > maxSequenceCount) {
+                tmpMaxSequence = s;
+                maxSequenceCount = countPerPsmSequence.get(s);
             }
         }
 
@@ -77,7 +90,7 @@ public class ClusteringFileCluster implements ICluster {
 
     @Override
     public Set<String> getSequences() {
-        return Collections.unmodifiableSet(sequences);
+        return Collections.unmodifiableSet(countPerPsmSequence.keySet());
     }
 
     @Override
@@ -113,5 +126,15 @@ public class ClusteringFileCluster implements ICluster {
     @Override
     public List<Float> getConsensusIntensValues() {
         return Collections.unmodifiableList(consensusIntensValues);
+    }
+
+    @Override
+    public int getPsmCount() {
+        return totalPsms;
+    }
+
+    @Override
+    public Map<String, Integer> getPsmSequenceCounts() {
+        return Collections.unmodifiableMap(countPerPsmSequence);
     }
 }
