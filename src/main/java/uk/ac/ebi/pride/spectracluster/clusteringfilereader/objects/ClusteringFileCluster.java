@@ -41,7 +41,10 @@ public class ClusteringFileCluster implements ICluster {
         countPerPsmSequence = new HashMap<String, Integer>();
 
         for (ISpectrumReference specRef : spectrumRefs) {
-            for (IPeptideSpectrumMatch psm : specRef.getPSMs()) {
+            // ignore identical PSMs
+            Set<IPeptideSpectrumMatch> uniquePsms = new HashSet<IPeptideSpectrumMatch>(specRef.getPSMs());
+
+            for (IPeptideSpectrumMatch psm : uniquePsms) {
                 if (!countPerPsmSequence.containsKey(psm.getSequence()))
                     countPerPsmSequence.put(psm.getSequence(), 0);
 
