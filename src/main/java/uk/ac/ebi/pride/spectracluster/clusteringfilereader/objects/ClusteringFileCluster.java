@@ -21,6 +21,8 @@ public class ClusteringFileCluster implements ICluster {
     private final List<Float> consensusMzValues;
     private final List<Float> consensusIntensValues;
 
+    private final String id;
+
     private Map<String, Integer> countPerPsmSequence;
 
     @Override
@@ -28,13 +30,14 @@ public class ClusteringFileCluster implements ICluster {
         return maxSequence;
     }
 
-    public ClusteringFileCluster(float avPrecursorMz, float avPrecursorIntens, List<SequenceCount> sequenceCounts, List<ISpectrumReference> spectrumRefs, List<Float> consensusMzValues, List<Float> consensusIntensValues) {
+    public ClusteringFileCluster(float avPrecursorMz, float avPrecursorIntens, List<SequenceCount> sequenceCounts, List<ISpectrumReference> spectrumRefs, List<Float> consensusMzValues, List<Float> consensusIntensValues, String id) {
         this.avPrecursorMz = avPrecursorMz;
         this.avPrecursorIntens = avPrecursorIntens;
         this.sequenceCounts = sequenceCounts;
         this.spectrumRefs = spectrumRefs;
         this.consensusMzValues = consensusMzValues;
         this.consensusIntensValues = consensusIntensValues;
+        this.id = id;
 
         // calculate the ratio for each sequence
         int nTotalPSMs = 0;
@@ -129,6 +132,11 @@ public class ClusteringFileCluster implements ICluster {
     @Override
     public List<Float> getConsensusIntensValues() {
         return Collections.unmodifiableList(consensusIntensValues);
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     @Override

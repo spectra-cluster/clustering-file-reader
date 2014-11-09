@@ -44,5 +44,5 @@ public interface ICluster {
 
     public List<Float> getConsensusIntensValues();
 
-
+    public String getId();
 }
