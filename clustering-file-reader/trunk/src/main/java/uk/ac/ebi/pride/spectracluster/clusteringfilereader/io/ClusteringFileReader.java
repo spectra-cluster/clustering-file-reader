@@ -71,6 +71,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
         String line;
 
         float avPrecursorMz = 0, avPrecursorIntens = 0;
+        String id = null;
         List<SequenceCount> sequenceCounts = new ArrayList<SequenceCount>();
         List<Float> consensusMzValues = new ArrayList<Float>();
         List<Float> consensusIntensValues = new ArrayList<Float>();
@@ -83,7 +84,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
                 // if we're already in a cluster, the current cluster is complete
                 if (inCluster) {
                     // create the cluster and return
-                    ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs, consensusMzValues, consensusIntensValues);
+                    ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs, consensusMzValues, consensusIntensValues, id);
 
                     return cluster;
                 }
@@ -91,6 +92,14 @@ public class ClusteringFileReader implements IClusterSourceReader {
                     // this means that this is the start of the first cluster in the file
                     inCluster = true;
                 }
+
+                id = null;
+                avPrecursorMz = 0;
+                avPrecursorIntens = 0;
+            }
+
+            if (line.startsWith("id=")) {
+                id = line.trim().substring(3);
             }
 
             if (line.startsWith(("av_precursor_mz="))) {
@@ -121,7 +130,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
 
         if (inCluster && sequenceCounts.size() > 0 && avPrecursorMz > 0) {
             // create the cluster and return
-            ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs, consensusMzValues, consensusIntensValues);
+            ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs, consensusMzValues, consensusIntensValues, id);
             inCluster = false;
 
             return cluster;
