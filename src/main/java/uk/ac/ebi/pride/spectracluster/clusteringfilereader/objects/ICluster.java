@@ -45,4 +45,6 @@ public interface ICluster {
     public List<Float> getConsensusIntensValues();
 
     public String getId();
+
+    public Set<String> getSpecies();
 }

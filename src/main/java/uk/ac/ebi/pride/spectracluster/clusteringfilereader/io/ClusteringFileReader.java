@@ -92,10 +92,6 @@ public class ClusteringFileReader implements IClusterSourceReader {
                     // this means that this is the start of the first cluster in the file
                     inCluster = true;
                 }
-
-                id = null;
-                avPrecursorMz = 0;
-                avPrecursorIntens = 0;
             }
 
             if (line.startsWith("id=")) {
