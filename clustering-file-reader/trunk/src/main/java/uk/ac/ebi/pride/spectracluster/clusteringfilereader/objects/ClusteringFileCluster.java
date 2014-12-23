@@ -88,6 +88,9 @@ public class ClusteringFileCluster implements ICluster {
         // save the species
         species = new HashSet<String>();
         for (ISpectrumReference specRef : spectrumRefs) {
+            if (specRef.getSpecies() == null) {
+                continue;
+            }
             species.add(specRef.getSpecies());
         }
     }
