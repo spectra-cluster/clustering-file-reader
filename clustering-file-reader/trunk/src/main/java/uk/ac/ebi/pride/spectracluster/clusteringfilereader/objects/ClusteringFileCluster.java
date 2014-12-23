@@ -25,6 +25,8 @@ public class ClusteringFileCluster implements ICluster {
 
     private Map<String, Integer> countPerPsmSequence;
 
+    private Set<String> species;
+
     @Override
     public String getMaxSequence() {
         return maxSequence;
@@ -81,6 +83,12 @@ public class ClusteringFileCluster implements ICluster {
                 minSpecPrecursorMz = specPrecursorMz;
             if (maxSpecPrecursorMz < specPrecursorMz)
                 maxSpecPrecursorMz = specPrecursorMz;
+        }
+
+        // save the species
+        species = new HashSet<String>();
+        for (ISpectrumReference specRef : spectrumRefs) {
+            species.add(specRef.getSpecies());
         }
     }
 
@@ -147,5 +155,10 @@ public class ClusteringFileCluster implements ICluster {
     @Override
     public Map<String, Integer> getPsmSequenceCounts() {
         return Collections.unmodifiableMap(countPerPsmSequence);
+    }
+
+    @Override
+    public Set<String> getSpecies() {
+        return Collections.unmodifiableSet(species);
     }
 }
