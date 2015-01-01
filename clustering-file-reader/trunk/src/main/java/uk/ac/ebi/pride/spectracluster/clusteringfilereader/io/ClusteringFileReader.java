@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 public class ClusteringFileReader implements IClusterSourceReader {
     private final File clusteringFile;
     private BufferedReader br;
-    private final Pattern sequenceCountPattern = Pattern.compile("([A-Za-z]+):(\\d+),?");
     private boolean inCluster = false;
 
     public ClusteringFileReader(File clusteringFile) {
@@ -154,11 +153,16 @@ public class ClusteringFileReader implements IClusterSourceReader {
 
         line = line.trim();
         String value = line.substring(10, line.length() - 1); // remove '[' and ']'
-        Matcher sequenceCountMatcher = sequenceCountPattern.matcher(value);
 
-        while (sequenceCountMatcher.find()) {
-            String sequence = sequenceCountMatcher.group(1);
-            int count = Integer.parseInt(sequenceCountMatcher.group(2));
+        String[] sequenceCountStrings = value.split(",");
+
+        for (String sequenceCountString : sequenceCountStrings) {
+            int index = sequenceCountString.indexOf(':');
+            if (index < 0)
+                continue;
+            String sequence = sequenceCountString.substring(0, index);
+            sequence = sequence.toUpperCase().replaceAll("[^A-Z]", "");
+            int count = Integer.parseInt(sequenceCountString.substring(index + 1));
             sequenceCounts.add(new SequenceCount(sequence, count));
         }
 
