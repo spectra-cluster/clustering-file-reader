@@ -36,7 +36,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
         List<ICluster> clusters = new ArrayList<ICluster>();
         ICluster cluster;
 
-        while ((cluster = readNextCluster(br)) != null)
+        while ((cluster = readNextCluster(br, false)) != null)
             clusters.add(cluster);
 
         br.close();
@@ -60,13 +60,13 @@ public class ClusteringFileReader implements IClusterSourceReader {
 
         ICluster cluster;
 
-        while ((cluster = readNextCluster(br)) != null) {
+        while ((cluster = readNextCluster(br, true)) != null) {
             for (IClusterSourceListener listener : listeners)
                 listener.onNewClusterRead(cluster);
         }
     }
 
-    private ICluster readNextCluster(final BufferedReader br) throws Exception {
+    private ICluster readNextCluster(final BufferedReader br, boolean includeSpectra) throws Exception {
         String line;
 
         float avPrecursorMz = 0, avPrecursorIntens = 0;
@@ -76,12 +76,18 @@ public class ClusteringFileReader implements IClusterSourceReader {
         List<Float> consensusIntensValues = new ArrayList<Float>();
 
         List<ISpectrumReference> spectrumRefs = new ArrayList<ISpectrumReference>();
-
+        ISpectrumReference lastSpecRef = null;
+        String lastMzString = "";
 
         while((line = br.readLine()) != null) {
             if (line.trim().equals("=Cluster=")) {
                 // if we're already in a cluster, the current cluster is complete
                 if (inCluster) {
+                    if (lastSpecRef != null) {
+                        spectrumRefs.add(lastSpecRef);
+                        lastSpecRef = null;
+                    }
+
                     // create the cluster and return
                     ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs, consensusMzValues, consensusIntensValues, id);
 
@@ -95,33 +101,56 @@ public class ClusteringFileReader implements IClusterSourceReader {
 
             if (line.startsWith("id=")) {
                 id = line.trim().substring(3);
+                continue;
             }
 
             if (line.startsWith(("av_precursor_mz="))) {
                 avPrecursorMz = Float.parseFloat(line.trim().substring(16));
+                continue;
             }
 
             if (line.startsWith("av_precursor_intens=")) {
                 avPrecursorIntens = Float.parseFloat(line.trim().substring(20));
+                continue;
             }
 
             if (line.startsWith("sequence=")) {
                 sequenceCounts = parseSequenceString(line);
+                continue;
             }
 
             if (line.startsWith("consensus_mz=")) {
                 consensusMzValues = parseFloatValuesString(line);
+                continue;
             }
 
             if (line.startsWith("consensus_intens=")) {
                 consensusIntensValues = parseFloatValuesString(line);
+                continue;
             }
 
-            if (line.startsWith("SPEC")) {
-                ISpectrumReference specRef = new ClusteringFileSpectrumReference(line.trim());
-                spectrumRefs.add(specRef);
+            if (line.startsWith("SPEC\t")) {
+                if (lastSpecRef != null) {
+                    spectrumRefs.add(lastSpecRef);
+                }
+
+                lastSpecRef = new ClusteringFileSpectrumReference(line.trim());
+                continue;
+            }
+
+            if (includeSpectra && line.startsWith("SPEC_MZ\t")) {
+                lastMzString = line.trim();
+                continue;
+            }
+
+            if (includeSpectra && line.startsWith("SPEC_INTENS\t") && lastSpecRef != null) {
+                lastSpecRef.addPeaksFromString(lastMzString, line.trim());
+                continue;
             }
         }
+
+        if (lastSpecRef != null)
+            spectrumRefs.add(lastSpecRef);
 
         if (inCluster && sequenceCounts.size() > 0 && avPrecursorMz > 0) {
             // create the cluster and return

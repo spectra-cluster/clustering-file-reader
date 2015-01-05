@@ -21,4 +21,10 @@ public interface ISpectrumReference {
     public IPeptideSpectrumMatch getMostCommonPSM();
 
     public List<IPeptideSpectrumMatch> getPSMs();
+
+    public boolean hasPeaks();
+
+    public List<ClusteringFileSpectrumReference.Peak> getPeaks();
+
+    public void addPeaksFromString(String mzString, String intensityString) throws Exception;
 }
