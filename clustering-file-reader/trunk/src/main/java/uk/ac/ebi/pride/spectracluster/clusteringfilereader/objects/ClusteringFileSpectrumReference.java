@@ -26,6 +26,8 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
     private float similarityScore = 0;
     private final String species;
     private final String modifications;
+    private boolean hasPeaks = false;
+    private List<Peak> peaks;
 
     private List<IPeptideSpectrumMatch> psms = new ArrayList<IPeptideSpectrumMatch>();
     private IPeptideSpectrumMatch mostCommonPsm;
@@ -143,6 +145,44 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
         }
     }
 
+    /**
+     * Adds peaks to the spectrum based on the m/z and intensity value string
+     * @param mzString
+     * @param intensityString
+     * @throws Exception
+     */
+    @Override
+    public void addPeaksFromString(String mzString, String intensityString) throws Exception {
+        if (mzString.startsWith("SPEC_MZ\t"))
+            mzString = mzString.substring(8);
+        if (intensityString.startsWith("SPEC_INTENS\t"))
+            intensityString = intensityString.substring(12);
+
+        String[] mzValues = mzString.split(",");
+        String[] intensValues = intensityString.split(",");
+
+        if (mzValues.length != intensValues.length) {
+            throw new Exception("Different number of m/z and intensity values encountered");
+        }
+
+        peaks = new ArrayList<Peak>(mzValues.length);
+        for (int i = 0; i < mzValues.length; i++) {
+            peaks.add(new Peak(Float.parseFloat(mzValues[i]), Float.parseFloat(intensValues[i])));
+        }
+
+        hasPeaks = true;
+    }
+
+    @Override
+    public boolean hasPeaks() {
+        return hasPeaks;
+    }
+
+    @Override
+    public List<Peak> getPeaks() {
+        return Collections.unmodifiableList(peaks);
+    }
+
     @Override
     public String getSpectrumId() {
         return id;
@@ -181,5 +221,43 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
     @Override
     public List<IPeptideSpectrumMatch> getPSMs() {
         return Collections.unmodifiableList(psms);
+    }
+
+    public final class Peak {
+        private final float mz;
+        private final float intensity;
+
+        public Peak(float mz, float intensity) {
+            this.mz = mz;
+            this.intensity = intensity;
+        }
+
+        public float getMz() {
+            return mz;
+        }
+
+        public float getIntensity() {
+            return intensity;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Peak peak = (Peak) o;
+
+            if (Float.compare(peak.intensity, intensity) != 0) return false;
+            if (Float.compare(peak.mz, mz) != 0) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (mz != +0.0f ? Float.floatToIntBits(mz) : 0);
+            result = 31 * result + (intensity != +0.0f ? Float.floatToIntBits(intensity) : 0);
+            return result;
+        }
     }
 }
