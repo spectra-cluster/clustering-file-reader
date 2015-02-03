@@ -32,7 +32,7 @@ public class ClusteringFilePSM implements IPeptideSpectrumMatch {
     }
 
     public void addModifications(Collection<IModification> modifications) {
-        modifications.addAll(modifications);
+        this.modifications.addAll(modifications);
     }
 
     public void clearModifications() {
