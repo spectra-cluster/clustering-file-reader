@@ -39,4 +39,12 @@ public class ClusteringFileModification implements IModification {
         result = 31 * result + accession.hashCode();
         return result;
     }
+
+    @Override
+    public int compareTo(IModification mod) {
+        int pos = this.getPosition();
+        int modPos = mod.getPosition();
+
+        return Integer.compare(pos, modPos);
+    }
 }
