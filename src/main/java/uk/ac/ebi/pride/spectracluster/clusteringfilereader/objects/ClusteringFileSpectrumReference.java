@@ -110,13 +110,17 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
             if (modificationsPerPSM != null) {
                 Matcher matcher = modificationPattern.matcher(modificationsPerPSM[i]);
 
+                List<IModification> mods = new LinkedList<IModification>();
                 while (matcher.find()) {
                     int position = Integer.parseInt(matcher.group(1));
                     String accession = matcher.group(2);
 
                     ClusteringFileModification mod = new ClusteringFileModification(position, accession);
-                    psm.addModification(mod);
+                    mods.add(mod);
                 }
+
+                Collections.sort(mods);
+                psm.addModifications(mods);
             }
 
             psms.add(psm);

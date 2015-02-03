@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +29,10 @@ public class ClusteringFilePSM implements IPeptideSpectrumMatch {
 
     public void addModification(IModification modification) {
         modifications.add(modification);
+    }
+
+    public void addModifications(Collection<IModification> modifications) {
+        modifications.addAll(modifications);
     }
 
     public void clearModifications() {
