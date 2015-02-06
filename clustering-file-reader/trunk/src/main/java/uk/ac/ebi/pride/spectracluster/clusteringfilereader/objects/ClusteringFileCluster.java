@@ -27,12 +27,21 @@ public class ClusteringFileCluster implements ICluster {
 
     private Set<String> species;
 
+    private final String fileName;
+
     @Override
     public String getMaxSequence() {
         return maxSequence;
     }
 
-    public ClusteringFileCluster(float avPrecursorMz, float avPrecursorIntens, List<SequenceCount> sequenceCounts, List<ISpectrumReference> spectrumRefs, List<Float> consensusMzValues, List<Float> consensusIntensValues, String id) {
+    public ClusteringFileCluster(float avPrecursorMz,
+                                 float avPrecursorIntens,
+                                 List<SequenceCount> sequenceCounts,
+                                 List<ISpectrumReference> spectrumRefs,
+                                 List<Float> consensusMzValues,
+                                 List<Float> consensusIntensValues,
+                                 String id,
+                                 String fileName) {
         this.avPrecursorMz = avPrecursorMz;
         this.avPrecursorIntens = avPrecursorIntens;
         this.sequenceCounts = sequenceCounts;
@@ -40,6 +49,7 @@ public class ClusteringFileCluster implements ICluster {
         this.consensusMzValues = consensusMzValues;
         this.consensusIntensValues = consensusIntensValues;
         this.id = id;
+        this.fileName = fileName;
 
         // calculate the ratio for each sequence
         int nTotalPSMs = 0;
@@ -163,5 +173,9 @@ public class ClusteringFileCluster implements ICluster {
     @Override
     public Set<String> getSpecies() {
         return Collections.unmodifiableSet(species);
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }
