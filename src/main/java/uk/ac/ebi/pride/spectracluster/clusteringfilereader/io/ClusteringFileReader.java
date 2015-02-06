@@ -8,8 +8,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by jg on 10.07.14.
@@ -89,7 +87,8 @@ public class ClusteringFileReader implements IClusterSourceReader {
                     }
 
                     // create the cluster and return
-                    ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs, consensusMzValues, consensusIntensValues, id);
+                    ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts,
+                            spectrumRefs, consensusMzValues, consensusIntensValues, id, clusteringFile.getName());
 
                     return cluster;
                 }
@@ -154,7 +153,8 @@ public class ClusteringFileReader implements IClusterSourceReader {
 
         if (inCluster && sequenceCounts.size() > 0 && avPrecursorMz > 0) {
             // create the cluster and return
-            ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs, consensusMzValues, consensusIntensValues, id);
+            ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs,
+                    consensusMzValues, consensusIntensValues, id, clusteringFile.getName());
             inCluster = false;
 
             return cluster;
