@@ -82,7 +82,13 @@ public class ClusteringFileCluster implements ICluster {
             }
         }
 
-        maxRatio = (float) maxSequenceCount / (float) spectrumRefs.size();
+        float ratio = (float) maxSequenceCount / (float) spectrumRefs.size();
+        if (ratio > 1) {
+            maxRatio = 1.0f;
+        } else {
+            maxRatio = ratio;
+        }
+
         maxSequence = tmpMaxSequence;
 
         // get min and max spec precursor mz

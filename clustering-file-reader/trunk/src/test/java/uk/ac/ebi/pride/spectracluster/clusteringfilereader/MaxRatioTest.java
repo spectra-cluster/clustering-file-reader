@@ -24,11 +24,27 @@ public class MaxRatioTest {
     }
 
     @Test
-    public void testMaxRatioIsCorrect() throws Exception {
+    public void testFirstClusterMaxRatioIsCorrect() throws Exception {
         ClusteringFileReader reader = new ClusteringFileReader(testFile);
         List<ICluster> clusters = reader.readAllClusters();
         ICluster cluster = clusters.get(0);
         Assert.assertEquals(1.00, cluster.getMaxRatio(), 0.001);
 
+    }
+
+    @Test
+    public void testSecondClusterMaxRatioIsCorrect() throws Exception {
+        ClusteringFileReader reader = new ClusteringFileReader(testFile);
+        List<ICluster> clusters = reader.readAllClusters();
+        ICluster cluster = clusters.get(1);
+        Assert.assertEquals(1.00, cluster.getMaxRatio(), 0.001);
+    }
+
+    @Test
+    public void testThirdClusterMaxRatioIsCorrect() throws Exception {
+        ClusteringFileReader reader = new ClusteringFileReader(testFile);
+        List<ICluster> clusters = reader.readAllClusters();
+        ICluster cluster = clusters.get(2);
+        Assert.assertEquals(1.00, cluster.getMaxRatio(), 0.001);
     }
 }

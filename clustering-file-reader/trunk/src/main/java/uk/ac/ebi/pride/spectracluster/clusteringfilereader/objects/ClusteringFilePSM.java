@@ -46,8 +46,8 @@ public class ClusteringFilePSM implements IPeptideSpectrumMatch {
 
         ClusteringFilePSM that = (ClusteringFilePSM) o;
 
-        if (!modifications.equals(that.modifications)) return false;
         if (!sequence.equals(that.sequence)) return false;
+        if (!modifications.equals(that.modifications)) return false;
 
         return true;
     }
