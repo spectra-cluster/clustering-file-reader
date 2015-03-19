@@ -44,7 +44,7 @@ If you have questions or need additional help, please contact the PRIDE Help des
 email: pride-support at ebi.ac.uk (replace at with @).
 
 # Giving your feedback
-Please give us your feedback, including error reports, suggestions on improvements, new feature requests. You can do so by opening a new issue at our [issues section](https://github.com/spectra-cluster/spectra-cluster/issues) 
+Please give us your feedback, including error reports, suggestions on improvements, new feature requests. You can do so by opening a new issue at our [issues section](https://github.com/spectra-cluster/clustering-file-reader/issues)
 
 # How to cite
 Please cite this library using one of the following publications:
