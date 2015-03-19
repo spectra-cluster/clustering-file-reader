@@ -7,7 +7,7 @@ This library supports parsing both the entire file and iterate over all the entr
 
 # Getting started
 
-### add
+### Installation
 You will need to have [Maven](http://maven.apache.org/) installed in order to build and use the spectra-cluster library.
 
 Add the following snippets in your Maven pom file:
