@@ -169,6 +169,10 @@ public class ClusteringFileReader implements IClusterSourceReader {
 
         line = line.substring(line.indexOf('=') + 1);
 
+        // no peaks
+        if (line.length() < 1)
+            return values;
+
         String[] stringValues = line.trim().split(",");
         for (String stringValue : stringValues) {
             values.add(Float.parseFloat(stringValue));
