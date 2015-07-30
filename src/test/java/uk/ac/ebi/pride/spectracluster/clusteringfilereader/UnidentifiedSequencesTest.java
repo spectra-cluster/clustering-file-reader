@@ -58,6 +58,8 @@ public class UnidentifiedSequencesTest {
         Assert.assertEquals(0, testCluster.getIdentifiedSpecCount());
         Assert.assertEquals(5, testCluster.getUnidentifiedSpecCount());
 
+        Assert.assertEquals(0, testCluster.getMaxRatio(), 0);
+
         for (ISpectrumReference specRef : testCluster.getSpectrumReferences()) {
             Assert.assertFalse(specRef.isIdentified());
         }

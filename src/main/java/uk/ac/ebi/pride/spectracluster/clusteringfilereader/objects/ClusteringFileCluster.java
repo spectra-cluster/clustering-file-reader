@@ -98,7 +98,10 @@ public class ClusteringFileCluster implements ICluster {
         float ratio = (float) maxSequenceCount / (float) identifiedSpecCount;
         if (ratio > 1) {
             maxRatio = 1.0f;
-        } else {
+        } else if (identifiedSpecCount < 1) {
+            maxRatio = 0;
+        }
+        else {
             maxRatio = ratio;
         }
 
