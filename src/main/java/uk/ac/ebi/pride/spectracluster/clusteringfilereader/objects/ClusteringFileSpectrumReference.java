@@ -26,6 +26,7 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
     private float similarityScore = 0;
     private final String species;
     private final String modifications;
+    private final boolean isIdentified;
     private boolean hasPeaks = false;
     private List<Peak> peaks;
 
@@ -36,6 +37,7 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
                                            String id, float similarityScore, String species,
                                            String modifications) {
         this.sequence = sequence;
+        this.isIdentified = sequence.length() > 0;
         this.charge = charge;
         this.precursorMz = precursorMz;
         this.id = id;
@@ -54,6 +56,7 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
 
         id = fields[INDEX_ID];
         sequence = fields[INDEX_SEQUENCE];
+        isIdentified = sequence.length() > 0;
         precursorMz = Float.parseFloat(fields[INDEX_PRECURSOR_MZ]);
 
         if (fields.length > INDEX_CHARGE)
@@ -123,7 +126,8 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
                 psm.addModifications(mods);
             }
 
-            psms.add(psm);
+            if (!psms.contains(psm))
+                psms.add(psm);
         }
 
         // count how often a certain PSM was found
@@ -263,5 +267,51 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
             result = 31 * result + (intensity != +0.0f ? Float.floatToIntBits(intensity) : 0);
             return result;
         }
+    }
+
+    public boolean isIdentified() {
+        return isIdentified;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ClusteringFileSpectrumReference that = (ClusteringFileSpectrumReference) o;
+
+        if (charge != that.charge) return false;
+        if (hasPeaks != that.hasPeaks) return false;
+        if (isIdentified != that.isIdentified) return false;
+        if (Float.compare(that.precursorMz, precursorMz) != 0) return false;
+        if (Float.compare(that.similarityScore, similarityScore) != 0) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (modifications != null ? !modifications.equals(that.modifications) : that.modifications != null)
+            return false;
+        if (mostCommonPsm != null ? !mostCommonPsm.equals(that.mostCommonPsm) : that.mostCommonPsm != null)
+            return false;
+        if (peaks != null ? !peaks.equals(that.peaks) : that.peaks != null) return false;
+        if (psms != null ? !psms.equals(that.psms) : that.psms != null) return false;
+        if (sequence != null ? !sequence.equals(that.sequence) : that.sequence != null) return false;
+        if (species != null ? !species.equals(that.species) : that.species != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sequence != null ? sequence.hashCode() : 0;
+        result = 31 * result + charge;
+        result = 31 * result + (precursorMz != +0.0f ? Float.floatToIntBits(precursorMz) : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (similarityScore != +0.0f ? Float.floatToIntBits(similarityScore) : 0);
+        result = 31 * result + (species != null ? species.hashCode() : 0);
+        result = 31 * result + (modifications != null ? modifications.hashCode() : 0);
+        result = 31 * result + (isIdentified ? 1 : 0);
+        result = 31 * result + (hasPeaks ? 1 : 0);
+        result = 31 * result + (peaks != null ? peaks.hashCode() : 0);
+        result = 31 * result + (psms != null ? psms.hashCode() : 0);
+        result = 31 * result + (mostCommonPsm != null ? mostCommonPsm.hashCode() : 0);
+        return result;
     }
 }
