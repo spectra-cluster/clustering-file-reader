@@ -18,6 +18,8 @@ public interface ISpectrumReference {
 
     public boolean isIdentifiedAsMultiplePeptides();
 
+    public boolean isIdentified();
+
     public IPeptideSpectrumMatch getMostCommonPSM();
 
     public List<IPeptideSpectrumMatch> getPSMs();
