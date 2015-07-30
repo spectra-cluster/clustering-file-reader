@@ -69,7 +69,6 @@ public class ClusteringFileReader implements IClusterSourceReader {
 
         float avPrecursorMz = 0, avPrecursorIntens = 0;
         String id = null;
-        List<SequenceCount> sequenceCounts = new ArrayList<SequenceCount>();
         List<Float> consensusMzValues = new ArrayList<Float>();
         List<Float> consensusIntensValues = new ArrayList<Float>();
 
@@ -87,7 +86,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
                     }
 
                     // create the cluster and return
-                    ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts,
+                    ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens,
                             spectrumRefs, consensusMzValues, consensusIntensValues, id, clusteringFile.getName());
 
                     return cluster;
@@ -96,7 +95,12 @@ public class ClusteringFileReader implements IClusterSourceReader {
                     // this means that this is the start of the first cluster in the file
                     inCluster = true;
                 }
+
+                continue;
             }
+
+            if (!inCluster)
+                continue;
 
             if (line.startsWith("id=")) {
                 id = line.trim().substring(3);
@@ -114,7 +118,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
             }
 
             if (line.startsWith("sequence=")) {
-                sequenceCounts = parseSequenceString(line);
+                // this is no longer supported and unreliable
                 continue;
             }
 
@@ -151,9 +155,9 @@ public class ClusteringFileReader implements IClusterSourceReader {
         if (lastSpecRef != null)
             spectrumRefs.add(lastSpecRef);
 
-        if (inCluster && sequenceCounts.size() > 0 && avPrecursorMz > 0) {
+        if (inCluster && spectrumRefs.size() > 0 && avPrecursorMz > 0) {
             // create the cluster and return
-            ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, sequenceCounts, spectrumRefs,
+            ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, spectrumRefs,
                     consensusMzValues, consensusIntensValues, id, clusteringFile.getName());
             inCluster = false;
 

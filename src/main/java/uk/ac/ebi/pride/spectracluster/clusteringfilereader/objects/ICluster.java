@@ -18,6 +18,10 @@ public interface ICluster {
 
     public int getSpecCount();
 
+    public int getIdentifiedSpecCount();
+
+    public int getUnidentifiedSpecCount();
+
     /**
      * Returns the total number of PSMs. This can be larger than the total
      * number of spectra as spectra can be identified as multiple peptides.

@@ -23,6 +23,9 @@ public class ClusteringFileCluster implements ICluster {
 
     private final String id;
 
+    private final int identifiedSpecCount;
+    private final int unidentifiedSpecCount;
+
     private Map<String, Integer> countPerPsmSequence;
 
     private Set<String> species;
@@ -36,7 +39,6 @@ public class ClusteringFileCluster implements ICluster {
 
     public ClusteringFileCluster(float avPrecursorMz,
                                  float avPrecursorIntens,
-                                 List<SequenceCount> sequenceCounts,
                                  List<ISpectrumReference> spectrumRefs,
                                  List<Float> consensusMzValues,
                                  List<Float> consensusIntensValues,
@@ -44,7 +46,6 @@ public class ClusteringFileCluster implements ICluster {
                                  String fileName) {
         this.avPrecursorMz = avPrecursorMz;
         this.avPrecursorIntens = avPrecursorIntens;
-        this.sequenceCounts = sequenceCounts;
         this.spectrumRefs = spectrumRefs;
         this.consensusMzValues = consensusMzValues;
         this.consensusIntensValues = consensusIntensValues;
@@ -52,14 +53,12 @@ public class ClusteringFileCluster implements ICluster {
         this.fileName = fileName;
 
         // calculate the ratio for each sequence
-        int nTotalPSMs = 0;
+        int nTotalPSMs = 0, nIdentifiedSpec = 0, nUnidentifiedSpec = 0;
         countPerPsmSequence = new HashMap<String, Integer>();
 
         for (ISpectrumReference specRef : spectrumRefs) {
-            // ignore identical PSMs
-            Set<IPeptideSpectrumMatch> uniquePsms = new HashSet<IPeptideSpectrumMatch>(specRef.getPSMs());
-
-            for (IPeptideSpectrumMatch psm : uniquePsms) {
+            // SpecRefs now only store unqiue psms, the previous HashSet is no longer necessary
+            for (IPeptideSpectrumMatch psm : specRef.getPSMs()) {
                 if (!countPerPsmSequence.containsKey(psm.getSequence()))
                     countPerPsmSequence.put(psm.getSequence(), 0);
 
@@ -67,9 +66,23 @@ public class ClusteringFileCluster implements ICluster {
 
                 nTotalPSMs++;
             }
+
+            if (specRef.isIdentified())
+                nIdentifiedSpec++;
+            else
+                nUnidentifiedSpec++;
         }
 
         totalPsms = nTotalPSMs;
+        this.identifiedSpecCount = nIdentifiedSpec;
+        this.unidentifiedSpecCount = nUnidentifiedSpec;
+
+        // create the sequence counts
+        this.sequenceCounts = new ArrayList<SequenceCount>();
+        for (String s : countPerPsmSequence.keySet()) {
+            SequenceCount sc = new SequenceCount(s, countPerPsmSequence.get(s));
+            sequenceCounts.add(sc);
+        }
 
         // get the maximum sequence
         String tmpMaxSequence = null;
@@ -82,7 +95,7 @@ public class ClusteringFileCluster implements ICluster {
             }
         }
 
-        float ratio = (float) maxSequenceCount / (float) spectrumRefs.size();
+        float ratio = (float) maxSequenceCount / (float) identifiedSpecCount;
         if (ratio > 1) {
             maxRatio = 1.0f;
         } else {
@@ -179,6 +192,16 @@ public class ClusteringFileCluster implements ICluster {
     @Override
     public Set<String> getSpecies() {
         return Collections.unmodifiableSet(species);
+    }
+
+    @Override
+    public int getIdentifiedSpecCount() {
+        return identifiedSpecCount;
+    }
+
+    @Override
+    public int getUnidentifiedSpecCount() {
+        return unidentifiedSpecCount;
     }
 
     public String getFileName() {
