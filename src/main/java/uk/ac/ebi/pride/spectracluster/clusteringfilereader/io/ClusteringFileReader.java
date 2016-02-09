@@ -2,12 +2,11 @@ package uk.ac.ebi.pride.spectracluster.clusteringfilereader.io;
 
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Created by jg on 10.07.14.
@@ -29,7 +28,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
             inCluster = false;
         }
 
-        br = new BufferedReader(new FileReader(clusteringFile));
+        br = openClusteringFile(clusteringFile);
 
         List<ICluster> clusters = new ArrayList<ICluster>();
         ICluster cluster;
@@ -52,7 +51,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
     @Override
     public void readClustersIteratively(Collection<IClusterSourceListener> listeners) throws Exception {
         if (br == null) {
-            br = new BufferedReader(new FileReader(clusteringFile));
+            br = openClusteringFile(clusteringFile);
             inCluster = false;
         }
 
@@ -61,6 +60,21 @@ public class ClusteringFileReader implements IClusterSourceReader {
         while ((cluster = readNextCluster(br, true)) != null) {
             for (IClusterSourceListener listener : listeners)
                 listener.onNewClusterRead(cluster);
+        }
+    }
+
+    /**
+     * Open the clustering file for reading.
+     * @param file
+     * @return
+     */
+    private BufferedReader openClusteringFile(File file) throws IOException {
+        if (file.getName().endsWith(".gz")) {
+            GZIPInputStream inputStream = new GZIPInputStream(new FileInputStream(file));
+            return new BufferedReader(new InputStreamReader(inputStream));
+        }
+        else {
+            return new BufferedReader(new FileReader(file));
         }
     }
 
