@@ -36,7 +36,46 @@ Add the following snippets in your Maven pom file:
 ```
 
 ### Running the library
-TBD
+The library supports two methods of reading a .clustering file:
+
+    1. Reading all clusters in at once (only advisable for smaller files)
+    2. Reading a .clustering file incrementally (optimised for very large result files)
+
+```Java
+/**
+ * Example reading a file in at once
+ */
+File myClusteringFile = new File("/tmp/test.clustering");
+
+// create an instance of a ClusteringFileReader
+IClusterSourceReader reader = new ClusteringFileReader(myClusteringFile);
+
+// read all clusters
+List<ICluster> clusters = reader.readAllClusters();
+```
+
+```
+/**
+ * Example processing a file incrementally.
+ */
+File myLargeClusteringFile = new File("/tmp/large_clustering_file.clustering");
+
+// To process clusters incrementally, the respective classes must implement
+// the IClusterSourceListener interface.
+IClusterSourceListener myListener = new MyListener();
+
+// multiple readers can be added at once (f.e. one
+// calculating the average cluster size, another
+// writing out all consensus spectra)
+List<IClusterSourceListener> listeners = new ArrayList<IClusterSourceListener>(1);
+listeners.add(myListener);
+
+// create the ClusteringFileReader
+IClusterSourceReader reader = new ClusteringFileReader(myLargeClusteringFile);
+
+// process the clusters incrementally
+reader.readClustersIteratively(listeners);
+```
 
 # File format specification
 The ".clustering" file format is text based. 
