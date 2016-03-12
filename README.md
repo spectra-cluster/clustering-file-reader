@@ -1,9 +1,11 @@
 # clustering-file-reader
 
 # Introduction
-clustering-file-reader is a library for parsing the clustering output produced by either [spectra-cluster](https://github.com/spectra-cluster/spectra-cluster) or [spectra-cluster-hadoop](https://github.com/spectra-cluster/spectra-cluster-hadoop) library.
-The clustering result file is compact text file format which contains all the information related to clusters, these can include the consensus spectrum, precursor details, and spectrum related details.
-This library supports parsing both the entire file and iterate over all the entries in a particular file
+The clustering-file-reader is a Java API to process .clustering files - a result file format for MS/MS based spectrum clustering. .clustering files are currently used by the [spectra-cluster](https://github.com/spectra-cluster/spectra-cluster) API, the [spectra-cluster-hadoop](https://github.com/spectra-cluster/spectra-cluster-hadoop) application and the [spectra-cluster-cli](https://github.com/spectra-cluster/spectra-cluster-cli) application.
+
+The [spectra-cluster-hadoop](https://github.com/spectra-cluster/spectra-cluster-hadoop) application is currently used to create the [PRIDE Cluster](https://www.ebi.ac.uk/pride/cluster) resource. The complete clustering results created as a basis of [PRIDE Cluster](https://www.ebi.ac.uk/pride/cluster) are available for download in the .clustering format ([ftp location](ftp://ftp.pride.ebi.ac.uk/pride/data/cluster/result-files/)).
+
+The .clustering result file format is a compact text file format which contains all the information related to clusters, these can include the consensus spectrum, precursor details, and spectrum related details. It is also possible to even store the spectra's original peaklists within the .clustering file.
 
 # Getting started
 
@@ -38,8 +40,8 @@ Add the following snippets in your Maven pom file:
 ### Running the library
 The library supports two methods of reading a .clustering file:
 
-    1. Reading all clusters in at once (only advisable for smaller files)
-    2. Reading a .clustering file incrementally (optimised for very large result files)
+  1. Reading all clusters in at once (only advisable for smaller files)
+  2. Reading a .clustering file incrementally (optimised for very large result files)
 
 ```Java
 /**
@@ -54,7 +56,11 @@ IClusterSourceReader reader = new ClusteringFileReader(myClusteringFile);
 List<ICluster> clusters = reader.readAllClusters();
 ```
 
+<<<<<<< HEAD
 ```
+=======
+```Java
+>>>>>>> develop
 /**
  * Example processing a file incrementally.
  */
