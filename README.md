@@ -56,11 +56,7 @@ IClusterSourceReader reader = new ClusteringFileReader(myClusteringFile);
 List<ICluster> clusters = reader.readAllClusters();
 ```
 
-<<<<<<< HEAD
-```
-=======
 ```Java
->>>>>>> develop
 /**
  * Example processing a file incrementally.
  */
