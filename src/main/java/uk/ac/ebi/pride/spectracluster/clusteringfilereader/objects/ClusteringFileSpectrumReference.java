@@ -314,4 +314,36 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
         result = 31 * result + (mostCommonPsm != null ? mostCommonPsm.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String getSourceFilename() {
+        int start = id.indexOf("#file=");
+        if (start >= 0) {
+            int end = id.indexOf("#", start + 1);
+            return id.substring(start + 6, end);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Integer getSourceIndex() {
+        int start = id.indexOf("#index=");
+        if (start >= 0) {
+            int end = id.indexOf("#", start + 1);
+            return new Integer( id.substring(start + 7, end) );
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getOriginalSpectrumTitle() {
+        int start = id.indexOf("#title=");
+        if (start >= 0) {
+            return id.substring(start + 7);
+        }
+
+        return id;
+    }
 }
