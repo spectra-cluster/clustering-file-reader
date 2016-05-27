@@ -105,7 +105,7 @@ Spectra are defined one line per spectrum containing 'tab' delimited fields. A s
 with the term "SPEC". The following fields are: 
 
 1. spectrum's id
-  * The spectrum id supports a special format to encode more detailed information about the spectrum's origin: `#file=test.mgf#index=120#title=The original title`.  For MGF and index-based files the index must be 0-based.
+  * The spectrum id supports a special format to encode more detailed information about the spectrum's origin: `#file=test.mgf#id=index=120#title=The original title`.  The `id=` field should contain the spectrum's id according to the PSI convention for formatting ids in peak list files (see [mzTab specification](https://github.com/HUPO-PSI/mzTab) as an example.
 2. whether this spectrum was identified as the most common peptide in the cluster ("true" / "false")
 3. The identified sequence. If multiple ranks are reported, sequences must be sorted by rank and delimited by an ","
 4. Spectrum's precursor's m/z

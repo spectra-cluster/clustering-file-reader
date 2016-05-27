@@ -327,11 +327,11 @@ public class ClusteringFileSpectrumReference implements ISpectrumReference {
     }
 
     @Override
-    public Integer getSourceIndex() {
-        int start = id.indexOf("#index=");
+    public String getSourceId() {
+        int start = id.indexOf("#id=");
         if (start >= 0) {
             int end = id.indexOf("#", start + 1);
-            return new Integer( id.substring(start + 7, end) );
+            return id.substring(start + 4, end);
         }
 
         return null;

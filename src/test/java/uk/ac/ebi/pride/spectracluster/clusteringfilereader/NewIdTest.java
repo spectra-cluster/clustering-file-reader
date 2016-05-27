@@ -32,12 +32,12 @@ public class NewIdTest {
 
         Assert.assertEquals(2, cluster1.getSpecCount());
 
-        Assert.assertEquals(new Integer(120), cluster1.getSpectrumReferences().get(0).getSourceIndex());
+        Assert.assertEquals("index=120", cluster1.getSpectrumReferences().get(0).getSourceId());
         Assert.assertEquals("test1.mgf", cluster1.getSpectrumReferences().get(0).getSourceFilename());
         Assert.assertEquals("PRD000493;PRIDE_Exp_Complete_Ac_18184.xml;spectrum=138243",
                 cluster1.getSpectrumReferences().get(0).getOriginalSpectrumTitle());
 
-        Assert.assertNull(cluster1.getSpectrumReferences().get(1).getSourceIndex());
+        Assert.assertNull(cluster1.getSpectrumReferences().get(1).getSourceId());
         Assert.assertNull(cluster1.getSpectrumReferences().get(1).getSourceFilename());
         Assert.assertEquals("PRD000493;PRIDE_Exp_Complete_Ac_18184.xml;spectrum=138248", cluster1.getSpectrumReferences().get(1).getOriginalSpectrumTitle());
     }

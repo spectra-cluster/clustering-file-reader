@@ -38,11 +38,12 @@ public interface ISpectrumReference {
     public String getSourceFilename();
 
     /**
-     * Spectrum source filenames and 0-based index within may be reported using a special id format. In cases
-     * were this format was used, this function returns the spectrum's index within the source file.
-     * @return The spectrum's source filename or NULL in case it wasn't reported.
+     * Spectrum source filename and original id within may be reported using a special id format. In cases
+     * were this format was used, this function returns the spectrum's id (should be according to the PSI
+     * convention for referencing spectra in peak list formats such as done in mzTab).
+     * @return The spectrum's source id or NULL in case it wasn't reported.
      */
-    public Integer getSourceIndex();
+    public String getSourceId();
 
     /**
      * If the spectrum source file and source index were reported using the special format, this function
