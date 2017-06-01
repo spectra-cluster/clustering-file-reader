@@ -36,10 +36,6 @@
         </developer>
     </developers>
 
-    <organization>
-        <name>European Bioinformatics Institute</name>
-        <url>http://www.ebi.ac.uk</url>
-    </organization>
 
     <dependencies>
         <dependency>
