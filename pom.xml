@@ -18,6 +18,13 @@
 
     <developers>
         <developer>
+            <id>jgriss</id>
+            <name>Johannes Griss</name>
+            <email>jgriss@ebi.ac.uk</email>
+            <organization>European Bioinformatics Institute</organization>
+            <organizationUrl>http://ebi.ac.uk/pride</organizationUrl>
+        </developer>
+        <developer>
             <id>mbernal</id>
             <name>Manuel Bernal-Llinares</name>
             <organization>Proteomics Team, EMBL-European Bioinformatics Institute</organization>
@@ -28,16 +35,6 @@
             <timezone>Europe/London</timezone>
         </developer>
     </developers>
-
-    <contributors>
-        <contributor>
-            <name>Johannes Griss</name>
-            <email>jgriss@ebi.ac.uk</email>
-            <organization>European Bioinformatics Institute</organization>
-            <organizationUrl>http://ebi.ac.uk/pride</organizationUrl>
-        </contributor>
-    </contributors>
-
 
     <organization>
         <name>European Bioinformatics Institute</name>
