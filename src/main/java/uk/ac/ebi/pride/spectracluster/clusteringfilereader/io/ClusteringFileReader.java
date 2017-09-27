@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clusteringfilereader.io;
 
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.indexing.ClusteringFileIndex;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.indexing.ClusteringIndexElement;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.*;
 import uk.ac.ebi.pride.tools.braf.BufferedRandomAccessFile;
@@ -24,9 +25,9 @@ public class ClusteringFileReader implements IClusterSourceReader {
         this.clusteringFile = clusteringFile;
     }
 
-    public ClusteringFileReader(File clusteringFile, Map<String, ClusteringIndexElement> fileIndex) {
+    public ClusteringFileReader(File clusteringFile, ClusteringFileIndex fileIndex) {
         this.clusteringFile = clusteringFile;
-        this.index = fileIndex;
+        this.index = fileIndex.getIndex();
     }
 
     @Override

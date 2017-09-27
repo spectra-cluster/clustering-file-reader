@@ -1,10 +1,12 @@
 package uk.ac.ebi.pride.spectracluster.clusteringfilereader.indexing;
 
+import java.io.Serializable;
+
 /**
  * IndexElement used to index .clustering files.
  *
  */
-public class ClusteringIndexElement {
+public class ClusteringIndexElement implements Serializable {
 	private final String id;
 	private final long start;
 	private final int size;

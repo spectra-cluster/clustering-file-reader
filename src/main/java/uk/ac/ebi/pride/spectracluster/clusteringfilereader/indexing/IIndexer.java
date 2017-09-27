@@ -15,5 +15,5 @@ public interface IIndexer {
      * @param resultFile File to index.
      * @return A Map with the cluster id as key and the ClusteringIndexElement as value.
      */
-    public Map<String, ClusteringIndexElement> indexFile(File resultFile) throws Exception;
+    public ClusteringFileIndex indexFile(File resultFile) throws Exception;
 }

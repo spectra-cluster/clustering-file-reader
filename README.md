@@ -42,6 +42,7 @@ The library supports two methods of reading a .clustering file:
 
   1. Reading all clusters in at once (only advisable for smaller files)
   2. Reading a .clustering file incrementally (optimised for very large result files)
+  3. Random access to indexed .clustering files (also works with very large result files)
 
 ```Java
 /**
@@ -77,6 +78,30 @@ IClusterSourceReader reader = new ClusteringFileReader(myLargeClusteringFile);
 
 // process the clusters incrementally
 reader.readClustersIteratively(listeners);
+```
+
+```Java
+/**
+ * Example randomly accessing a file
+ **/
+
+File myLargeClusteringFile = new File("/tmp/large_clustering_file.clustering");
+
+// First, the file must be indexed. The index can also be saved to a file for faster
+// re-use.
+IIndexer indexer = new ClusteringFileIndexer();
+ClusteringFileIndex index = indexer.indexFile(myLargeClusteringFile);
+
+// create the ClusteringFileReader with the index
+ClusteringFileReader reader = new ClusteringFileReader(myLargeClusteringFile, index);
+ICluster cluster = reader.readCluster("c8ada97f-094d-409b-8651-3d2efc77dbea");
+
+// save the index to a file
+File indexFile = new File("/tmp/large_clustering_file.clustering.index");
+index.saveToFile(indexFile);
+
+// the index can now be loaded directly from this file
+ClusteringFileIndex loadedIndex = ClusteringFileIndex.loadFromFile(indexFile);
 ```
 
 # File format specification

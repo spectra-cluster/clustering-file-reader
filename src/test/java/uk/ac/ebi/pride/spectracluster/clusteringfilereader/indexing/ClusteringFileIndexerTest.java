@@ -26,7 +26,8 @@ public class ClusteringFileIndexerTest {
     @Test
     public void testClusteringIndexer() throws Exception {
         IIndexer indexer = new ClusteringFileIndexer();
-        Map<String, ClusteringIndexElement> index = indexer.indexFile(oldTestFile);
+        ClusteringFileIndex fileIndex = indexer.indexFile(oldTestFile);
+        Map<String, ClusteringIndexElement> index = fileIndex.getIndex();
 
         Assert.assertEquals("Incorrect number of clusters found",960, index.size());
         Assert.assertTrue(index.containsKey("0"));
@@ -39,7 +40,7 @@ public class ClusteringFileIndexerTest {
     @Test
     public void testClusteringIndexerExport17() throws Exception {
         IIndexer indexer = new ClusteringFileIndexer();
-        Map<String, ClusteringIndexElement> index = indexer.indexFile(newTestFile);
+        Map<String, ClusteringIndexElement> index = indexer.indexFile(newTestFile).getIndex();
 
         Assert.assertEquals("Incorrect number of clusters found",107, index.size());
         Assert.assertTrue("c8ada97f-094d-409b-8651-3d2efc77dbea", index.containsKey("c8ada97f-094d-409b-8651-3d2efc77dbea"));
@@ -64,7 +65,7 @@ public class ClusteringFileIndexerTest {
     @Test
     public void testRandomAccess() throws Exception {
         IIndexer indexer = new ClusteringFileIndexer();
-        Map<String, ClusteringIndexElement> index = indexer.indexFile(newTestFile);
+        ClusteringFileIndex index = indexer.indexFile(newTestFile);
 
         ClusteringFileReader reader = new ClusteringFileReader(newTestFile, index);
 
@@ -82,5 +83,25 @@ public class ClusteringFileIndexerTest {
         Assert.assertEquals(400.004F, cluster2.getAvPrecursorMz());
         Assert.assertEquals(4, cluster2.getSpecCount());
         Assert.assertEquals(0, cluster.getUnidentifiedSpecCount());
+    }
+
+    @Test
+    public void testBinaryReadWrite() throws Exception {
+        IIndexer indexer = new ClusteringFileIndexer();
+        ClusteringFileIndex index = indexer.indexFile(newTestFile);
+
+        File temporaryFile = File.createTempFile("index_test", ".index");
+        index.saveToFile(temporaryFile);
+
+        ClusteringFileIndex loadedIndex = ClusteringFileIndex.loadFromFile(temporaryFile);
+
+        Assert.assertEquals("Incorrect number of clusters found",107, loadedIndex.getIndex().size());
+        Assert.assertTrue("c8ada97f-094d-409b-8651-3d2efc77dbea", loadedIndex.getIndex().containsKey("c8ada97f-094d-409b-8651-3d2efc77dbea"));
+        Assert.assertTrue("Missing last cluster", loadedIndex.getIndex().containsKey("08b511d4-25f7-4630-9d44-04c6fee124a5"));
+
+        ClusteringIndexElement indexElement = loadedIndex.getIndex().get("c8ada97f-094d-409b-8651-3d2efc77dbea");
+        Assert.assertEquals(152, indexElement.getStart());
+
+        temporaryFile.delete();
     }
 }

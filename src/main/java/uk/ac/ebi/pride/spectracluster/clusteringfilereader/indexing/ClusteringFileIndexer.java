@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class ClusteringFileIndexer implements IIndexer {
     @Override
-    public Map<String, ClusteringIndexElement> indexFile(File resultFile) throws Exception {
+    public ClusteringFileIndex indexFile(File resultFile) throws Exception {
         // open the file
         BufferedRandomAccessFile randomAccessFile = new BufferedRandomAccessFile(resultFile, "r", 1024 * 100);
 
@@ -94,6 +94,6 @@ public class ClusteringFileIndexer implements IIndexer {
 
         randomAccessFile.close();
 
-        return clusterIndexes;
+        return new ClusteringFileIndex(clusterIndexes);
     }
 }
