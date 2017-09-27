@@ -25,4 +25,11 @@ public interface IClusterSourceReader {
      * @throws Exception
      */
     public void readClustersIteratively(Collection<IClusterSourceListener> listeners) throws Exception;
+
+    /**
+     * Read a specific cluster.
+     * @param id The cluster's id
+     * @return The cluster.
+     */
+    public ICluster readCluster(String id) throws Exception;
 }

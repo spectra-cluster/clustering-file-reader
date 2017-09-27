@@ -49,6 +49,12 @@
             <version>${uk.ac.ebi.pride.architectural-pride-tdd.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.pride.tools</groupId>
+            <artifactId>braf</artifactId>
+            <version>1.2.2</version>
+        </dependency>
     </dependencies>
 
     <build>

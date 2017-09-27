@@ -42,6 +42,7 @@ The library supports two methods of reading a .clustering file:
 
   1. Reading all clusters in at once (only advisable for smaller files)
   2. Reading a .clustering file incrementally (optimised for very large result files)
+  3. Random access to indexed .clustering files (also works with very large result files)
 
 ```Java
 /**
@@ -79,6 +80,30 @@ IClusterSourceReader reader = new ClusteringFileReader(myLargeClusteringFile);
 reader.readClustersIteratively(listeners);
 ```
 
+```Java
+/**
+ * Example randomly accessing a file
+ **/
+
+File myLargeClusteringFile = new File("/tmp/large_clustering_file.clustering");
+
+// First, the file must be indexed. The index can also be saved to a file for faster
+// re-use.
+IIndexer indexer = new ClusteringFileIndexer();
+ClusteringFileIndex index = indexer.indexFile(myLargeClusteringFile);
+
+// create the ClusteringFileReader with the index
+ClusteringFileReader reader = new ClusteringFileReader(myLargeClusteringFile, index);
+ICluster cluster = reader.readCluster("c8ada97f-094d-409b-8651-3d2efc77dbea");
+
+// save the index to a file
+File indexFile = new File("/tmp/large_clustering_file.clustering.index");
+index.saveToFile(indexFile);
+
+// the index can now be loaded directly from this file
+ClusteringFileIndex loadedIndex = ClusteringFileIndex.loadFromFile(indexFile);
+```
+
 # File format specification
 The ".clustering" file format is text based. 
 
@@ -105,6 +130,7 @@ Spectra are defined one line per spectrum containing 'tab' delimited fields. A s
 with the term "SPEC". The following fields are: 
 
 1. spectrum's id
+  * The spectrum id supports a special format to encode more detailed information about the spectrum's origin: `#file=test.mgf#id=index=120#title=The original title`.  The `id=` field should contain the spectrum's id according to the PSI convention for formatting ids in peak list files (see [mzTab specification](https://github.com/HUPO-PSI/mzTab) as an example).
 2. whether this spectrum was identified as the most common peptide in the cluster ("true" / "false")
 3. The identified sequence. If multiple ranks are reported, sequences must be sorted by rank and delimited by an ","
 4. Spectrum's precursor's m/z
