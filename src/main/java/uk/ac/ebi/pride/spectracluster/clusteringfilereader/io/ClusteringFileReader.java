@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.spectracluster.clusteringfilereader.io;
 
+import uk.ac.ebi.pride.spectracluster.clusteringfilereader.indexing.ClusteringIndexElement;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.objects.*;
+import uk.ac.ebi.pride.tools.braf.BufferedRandomAccessFile;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -15,9 +18,15 @@ public class ClusteringFileReader implements IClusterSourceReader {
     private final File clusteringFile;
     private BufferedReader br;
     private boolean inCluster = false;
+    private Map<String, ClusteringIndexElement> index;
 
     public ClusteringFileReader(File clusteringFile) {
         this.clusteringFile = clusteringFile;
+    }
+
+    public ClusteringFileReader(File clusteringFile, Map<String, ClusteringIndexElement> fileIndex) {
+        this.clusteringFile = clusteringFile;
+        this.index = fileIndex;
     }
 
     @Override
@@ -61,6 +70,36 @@ public class ClusteringFileReader implements IClusterSourceReader {
             for (IClusterSourceListener listener : listeners)
                 listener.onNewClusterRead(cluster);
         }
+    }
+
+    /**
+     * Reads the specified cluster from the file. This is only supported
+     * if the ClusteringFileReader was created with an index element.
+     * @param id The cluster's id
+     * @return The cluster object
+     * @throws Exception
+     */
+    @Override
+    public ICluster readCluster(String id) throws Exception {
+        if (index == null) {
+            throw new Exception("Clusters can only be read by id if the ClusteringFileReader is" +
+                    " constructed with a file index.");
+        }
+        if (!index.containsKey(id)) {
+            throw new Exception("Cluster " + id + " could not be found in the index");
+        }
+
+        // read the cluster string
+        ClusteringIndexElement indexElement = index.get(id);
+        byte[] byteBuffer = new byte[indexElement.getSize()];
+        BufferedRandomAccessFile randomAccessFile = new BufferedRandomAccessFile(clusteringFile,
+                "r", 1024 * 100);
+        randomAccessFile.seek(indexElement.getStart());
+        randomAccessFile.read(byteBuffer);
+        randomAccessFile.close();
+        String clusteringString = new String(byteBuffer);
+
+        return readNextCluster(new BufferedReader(new StringReader(clusteringString)), true);
     }
 
     /**
