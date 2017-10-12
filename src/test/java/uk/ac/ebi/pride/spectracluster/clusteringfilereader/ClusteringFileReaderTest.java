@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.spectracluster.clusteringfilereader;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.spectracluster.clusteringfilereader.io.ClusteringFileReader;
@@ -92,5 +93,23 @@ public class ClusteringFileReaderTest {
         assertEquals(1, spectrum.getMostCommonPSM().getModifications().size());
         assertEquals(1, spectrum.getMostCommonPSM().getModifications().get(0).getPosition());
         assertEquals("MOD:01455", spectrum.getMostCommonPSM().getModifications().get(0).getAccession());
+    }
+
+    @Test
+    public void testReadConsensusSpectrum() throws Exception {
+        IClusterSourceReader reader = new ClusteringFileReader(completeFile);
+
+        List<ICluster> clusters = reader.readAllClusters();
+
+        // mz and intens values are the same, count values are missing
+        for (ICluster cluster : clusters) {
+            int nMzValues = cluster.getConsensusMzValues().size();
+            int nIntensValues = cluster.getConsensusIntensValues().size();
+            int nCountsValues = cluster.getConsensusCountValues().size();
+
+            Assert.assertTrue(nMzValues > 0);
+            Assert.assertTrue(nMzValues == nIntensValues);
+            Assert.assertEquals(0, nCountsValues);
+        }
     }
 }

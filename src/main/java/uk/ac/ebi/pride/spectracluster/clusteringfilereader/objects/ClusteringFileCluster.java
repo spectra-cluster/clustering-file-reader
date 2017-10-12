@@ -20,6 +20,7 @@ public class ClusteringFileCluster implements ICluster {
 
     private final List<Float> consensusMzValues;
     private final List<Float> consensusIntensValues;
+    private final List<Integer> consensusCountValues;
 
     private final String id;
 
@@ -42,6 +43,7 @@ public class ClusteringFileCluster implements ICluster {
                                  List<ISpectrumReference> spectrumRefs,
                                  List<Float> consensusMzValues,
                                  List<Float> consensusIntensValues,
+                                 List<Integer> consensusCountValues,
                                  String id,
                                  String fileName) {
         this.avPrecursorMz = avPrecursorMz;
@@ -49,6 +51,7 @@ public class ClusteringFileCluster implements ICluster {
         this.spectrumRefs = spectrumRefs;
         this.consensusMzValues = consensusMzValues;
         this.consensusIntensValues = consensusIntensValues;
+        this.consensusCountValues = consensusCountValues;
         this.id = id;
         this.fileName = fileName;
 
@@ -175,6 +178,11 @@ public class ClusteringFileCluster implements ICluster {
     @Override
     public List<Float> getConsensusIntensValues() {
         return Collections.unmodifiableList(consensusIntensValues);
+    }
+
+    @Override
+    public List<Integer> getConsensusCountValues() {
+        return Collections.unmodifiableList(consensusCountValues);
     }
 
     @Override

@@ -104,6 +104,13 @@ index.saveToFile(indexFile);
 ClusteringFileIndex loadedIndex = ClusteringFileIndex.loadFromFile(indexFile);
 ```
 
+### Note on consensus spectra
+
+The spectra-cluster API also includes how often a consensus peak was observed in
+the .clustering files since version 1.0.11. If .clustering files that were created
+prior to this version, the function `getConsensusCountValues()` only returns an
+empty list.
+
 # File format specification
 The ".clustering" file format is text based. 
 
@@ -120,9 +127,10 @@ name is separated by an "=" from the value. Cluster properties are:
 1. id: the cluster's id
 2. av_precursor_mz: the average precursor m/z
 3. av_precursor_intensity: the average precursor intensity
-4. sequence: List of sequences of the peptides identified in the cluster in the format "[{sequence}:{count}]"
-5. consensus_mz: ',' delimited m/z values of the consensus spectrum
-6. consensus_intens: ',' delimited intensity values of the consensus spectrum
+4. consensus_peak_counts: the number of times a peak was observed (only since spectra-cluster version 1.0.11)
+5. sequence: List of sequences of the peptides identified in the cluster in the format "[{sequence}:{count}]"
+6. consensus_mz: ',' delimited m/z values of the consensus spectrum
+7. consensus_intens: ',' delimited intensity values of the consensus spectrum
 
 ### Defining spectra in clusters
 
@@ -151,6 +159,7 @@ av_precursor_intens=1.0
 sequence=[GIFAFVK,GIFAFVK:3]
 consensus_mz=114.109,115.106,120.076,...
 consensus_intens=292.16,272.41,2241.61,...
+consensus_peak_counts=1,4,2,4,...
 SPEC	PXD000732;MFerrer_PAO1_2013.xml;spectrum=3121	true	GIFAFVK,GIFAFVK	357.22116	3	287	7-MOD:01499,0-MOD:01499;7-MOD:01499,0-MOD:01499	0.9987784157651239
 ```
 

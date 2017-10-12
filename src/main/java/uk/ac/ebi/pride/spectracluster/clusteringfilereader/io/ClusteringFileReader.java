@@ -125,6 +125,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
         String id = null;
         List<Float> consensusMzValues = new ArrayList<Float>();
         List<Float> consensusIntensValues = new ArrayList<Float>();
+        List<Integer> consensCountValues = new ArrayList<Integer>();
 
         List<ISpectrumReference> spectrumRefs = new ArrayList<ISpectrumReference>();
         ISpectrumReference lastSpecRef = null;
@@ -141,7 +142,8 @@ public class ClusteringFileReader implements IClusterSourceReader {
 
                     // create the cluster and return
                     ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens,
-                            spectrumRefs, consensusMzValues, consensusIntensValues, id, clusteringFile.getName());
+                            spectrumRefs, consensusMzValues, consensusIntensValues, consensCountValues,
+                            id, clusteringFile.getName());
 
                     return cluster;
                 }
@@ -186,6 +188,11 @@ public class ClusteringFileReader implements IClusterSourceReader {
                 continue;
             }
 
+            if (line.startsWith("consensus_peak_counts=")) {
+                consensCountValues = parseIntValuesString(line);
+                continue;
+            }
+
             if (line.startsWith("SPEC\t")) {
                 if (lastSpecRef != null) {
                     spectrumRefs.add(lastSpecRef);
@@ -212,7 +219,7 @@ public class ClusteringFileReader implements IClusterSourceReader {
         if (inCluster && spectrumRefs.size() > 0 && avPrecursorMz > 0) {
             // create the cluster and return
             ICluster cluster = new ClusteringFileCluster(avPrecursorMz, avPrecursorIntens, spectrumRefs,
-                    consensusMzValues, consensusIntensValues, id, clusteringFile.getName());
+                    consensusMzValues, consensusIntensValues, consensCountValues, id, clusteringFile.getName());
             inCluster = false;
 
             return cluster;
@@ -234,6 +241,23 @@ public class ClusteringFileReader implements IClusterSourceReader {
         String[] stringValues = line.trim().split(",");
         for (String stringValue : stringValues) {
             values.add(Float.parseFloat(stringValue));
+        }
+
+        return values;
+    }
+
+    private List<Integer> parseIntValuesString(String line) {
+        List<Integer> values = new ArrayList<Integer>();
+
+        line = line.substring(line.indexOf('=') + 1);
+
+        // no peaks
+        if (line.length() < 1)
+            return values;
+
+        String[] stringValues = line.trim().split(",");
+        for (String stringValue : stringValues) {
+            values.add(Integer.parseInt(stringValue));
         }
 
         return values;
