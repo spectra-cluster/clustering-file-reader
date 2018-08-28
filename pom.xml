@@ -4,7 +4,7 @@
 
     <groupId>uk.ac.ebi.pride.spectracluster</groupId>
     <artifactId>clustering-file-reader</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.5</version>
     <packaging>jar</packaging>
     <licenses>
         <license>
@@ -35,7 +35,7 @@
         <connection>scm:git:https://github.com/spectra-cluster/clustering-file-reader.git</connection>
         <developerConnection>scm:git:https://github.com/spectra-cluster/clustering-file-reader.git</developerConnection>
         <url>scm:git:https://github.com/spectra-cluster/clustering-file-reader.git</url>
-        <tag>HEAD</tag>
+        <tag>clustering-file-reader-1.5</tag>
     </scm>
 
     <dependencies>
