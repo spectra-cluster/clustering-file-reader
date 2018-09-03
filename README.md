@@ -1,5 +1,7 @@
 # clustering-file-reader
 
+[![Build Status](https://travis-ci.org/spectra-cluster/clustering-file-reader.svg?branch=master)](https://travis-ci.org/spectra-cluster/clustering-file-reader)
+
 # Introduction
 The clustering-file-reader is a Java API to process .clustering files - a result file format for MS/MS based spectrum clustering. .clustering files are currently used by the [spectra-cluster](https://github.com/spectra-cluster/spectra-cluster) API, the [spectra-cluster-hadoop](https://github.com/spectra-cluster/spectra-cluster-hadoop) application and the [spectra-cluster-cli](https://github.com/spectra-cluster/spectra-cluster-cli) application.
 
